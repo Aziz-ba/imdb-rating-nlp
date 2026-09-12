@@ -1,0 +1,8 @@
+{
+  "note": "Metrics from training on the full IMDB-Movie-Data dataset (~1000 films, 80/20 split). Target: IMDb rating (0-10) predicted from the plot description text only.",
+  "models": {
+    "tfidf_ridge":  { "MAE": 0.721, "RMSE": 0.957, "R2": 0.045 },
+    "use_dnn":      { "MAE": 1.388, "RMSE": 1.705, "R2": -2.034 },
+    "distilbert":   { "MAE": 0.671, "RMSE": 0.881, "R2": null }
+  }
+}

@@ -1,8 +1,10 @@
+# Baseline (lightweight)
 pandas
 numpy
-matplotlib
-seaborn
 scikit-learn
+matplotlib
+joblib
+# Deep-learning approaches (heavier, optional)
 tensorflow
 tensorflow-hub
 torch

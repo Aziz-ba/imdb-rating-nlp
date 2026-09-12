@@ -1,29 +1,82 @@
-# 🎥 Predicting IMDb Ratings from Text — an NLP benchmark
+# 🎥 Can you predict a movie's IMDb rating from its plot alone?
 
-Can you predict a movie's **IMDb rating** from nothing but its **plot description**? This project answers that question by building and comparing **three progressively more powerful NLP models** on the same task.
+A focused NLP study that answers one question: **how well can a model predict a film's IMDb rating (0–10) using only its plot description?** Three approaches of increasing sophistication are put head-to-head on the same task and the same split — from a classic sparse baseline to a fine-tuned transformer.
 
-A single regression target (`IMDB_Rating`), one text feature (the movie description), and three modeling philosophies put head to head.
+The interesting part isn't just *which* wins — it's *by how little*.
+
+---
+
+## 📊 Results
+
+Trained on the [IMDB-Movie-Data](https://www.kaggle.com/datasets/PromptCloudHQ/imdb-data) dataset (~1000 films, 80/20 split). Lower error is better.
+
+| Model | MAE ↓ | RMSE ↓ | R² ↑ |
+|-------|:----:|:-----:|:---:|
+| TF-IDF + Ridge (baseline) | 0.721 | 0.957 | 0.045 |
+| Universal Sentence Encoder + DNN | 1.388 | 1.705 | −2.034 |
+| **DistilBERT (fine-tuned)** | **0.671** | **0.881** | — |
+
+![Model comparison](assets/model_comparison.png)
+
+---
+
+## 💡 What the numbers actually say
+
+1. **The transformer wins — but only just.** DistilBERT (MAE 0.671) beats a plain TF-IDF + Ridge baseline (MAE 0.721) by **~0.05 of a rating point**. For the effort and compute a fine-tuned transformer costs, that's a humbling margin.
+2. **More complexity is not automatically better.** The mid-complexity USE + DNN was the **worst** model (negative R² — it did worse than predicting the mean). Dense nets on frozen sentence embeddings overfit this small dataset.
+3. **The task itself is hard.** Even the best model explains little variance. A plot summary carries only weak signal about a film's rating — cast, genre, budget and era matter more. The honest conclusion: **text alone is a weak predictor of rating**, and a simple baseline is a strong, cheap reference point.
+
+> Takeaway: always benchmark against a simple baseline before reaching for heavy models.
 
 ---
 
 ## 🧪 The three approaches
 
-| # | Approach | Idea | Libraries |
-|---|----------|------|-----------|
-| 1 | **TF-IDF + Ridge Regression** | Classic sparse bag-of-words baseline | scikit-learn |
-| 2 | **Universal Sentence Encoder + DNN** | Dense 512-d semantic embeddings feeding a Keras neural net | TensorFlow Hub, Keras |
-| 3 | **DistilBERT (fine-tuned)** | Transformer contextual embeddings for regression | 🤗 Transformers, PyTorch |
-
-The notebook covers the full workflow: **text cleaning → EDA → vectorization/embedding → training → evaluation**, so you can see exactly how much each jump in model sophistication buys you.
+| Approach | Idea | Stack |
+|----------|------|-------|
+| **TF-IDF + Ridge** | Sparse bag-of-words → linear regression | scikit-learn |
+| **USE + DNN** | 512-d semantic embeddings → dense net | TensorFlow Hub, Keras |
+| **DistilBERT** | Fine-tuned transformer regression head | 🤗 Transformers, PyTorch |
 
 ---
 
-## 🔬 Pipeline
+## 🚀 Run it
 
-1. **Load** the [IMDB Movie dataset](https://www.kaggle.com/datasets/PromptCloudHQ/imdb-data) via `kagglehub`.
-2. **Clean** the text (lowercase, strip punctuation) and keep `Title`, `Description`, `Rating`.
-3. **Explore** the rating distribution and text length.
-4. **Model** with the three approaches above and compare error.
+```bash
+pip install -r requirements.txt
+
+# Baseline on the bundled sample (smoke test)
+python src/train.py --data data/sample_movies.csv --model tfidf
+
+# Full dataset (see data/README.md to download it), and save the model
+python src/train.py --data IMDB-Movie-Data.csv --model tfidf --save model.joblib
+
+# Predict a rating from a plot description
+python src/predict.py model.joblib "A thief who steals corporate secrets through dream-sharing tech."
+# -> Predicted IMDb rating: 8.20 / 10
+```
+
+Regenerate the chart from `results/metrics.json`:
+```bash
+python src/make_results_chart.py
+```
+
+---
+
+## 🗂️ Structure
+
+```
+src/
+  preprocess.py        text cleaning + data loading
+  models.py            the 3 model builders (USE/DistilBERT import lazily)
+  train.py             train + evaluate (MAE / RMSE / R²)
+  predict.py           predict a rating from a description
+  make_results_chart.py
+data/                  bundled sample + how to get the full dataset
+results/metrics.json   the reported metrics
+assets/                generated comparison chart
+notebooks/             original exploratory notebook
+```
 
 ---
 
@@ -34,28 +87,6 @@ The notebook covers the full workflow: **text cleaning → EDA → vectorization
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 ![Hugging Face](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat-square)
-
-pandas · numpy · matplotlib · seaborn · scikit-learn · TensorFlow/Keras · TF-Hub (Universal Sentence Encoder) · PyTorch · DistilBERT
-
----
-
-## 🚀 Run it
-
-```bash
-pip install -r requirements.txt
-jupyter notebook notebooks/imdb_rating_nlp.ipynb
-```
-
-The dataset is pulled automatically with `kagglehub` (you'll need Kaggle credentials configured locally).
-
----
-
-## 📚 What this project demonstrates
-
-- End-to-end **NLP regression** workflow
-- Text preprocessing and exploratory analysis
-- **Benchmarking** classic ML vs. deep learning vs. transformers on one task
-- Practical use of **TF-IDF, sentence embeddings, and DistilBERT**
 
 ---
 
