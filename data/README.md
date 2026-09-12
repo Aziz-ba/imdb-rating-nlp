@@ -1,7 +1,7 @@
 # Data
 
-- `sample_movies.csv` — a tiny bundled sample (real films & approximate IMDb ratings) so the
-  pipeline runs out of the box. It is **only for smoke-testing** — far too small for meaningful metrics.
+- `sample_movies.csv` - a tiny bundled sample (real films & approximate IMDb ratings) so the
+  pipeline runs out of the box. It is **only for smoke-testing** - far too small for meaningful metrics.
 
 ## Full dataset
 

@@ -1,8 +1,8 @@
 # 🎥 Can you predict a movie's IMDb rating from its plot alone?
 
-A focused NLP study that answers one question: **how well can a model predict a film's IMDb rating (0–10) using only its plot description?** Three approaches of increasing sophistication are put head-to-head on the same task and the same split — from a classic sparse baseline to a fine-tuned transformer.
+A focused NLP study that answers one question: **how well can a model predict a film's IMDb rating (0-10) using only its plot description?** Three approaches of increasing sophistication are put head-to-head on the same task and the same split - from a classic sparse baseline to a fine-tuned transformer.
 
-The interesting part isn't just *which* wins — it's *by how little*.
+The interesting part isn't just *which* wins - it's *by how little*.
 
 ---
 
@@ -14,7 +14,7 @@ Trained on the [IMDB-Movie-Data](https://www.kaggle.com/datasets/PromptCloudHQ/i
 |-------|:----:|:-----:|:---:|
 | TF-IDF + Ridge (baseline) | 0.721 | 0.957 | 0.045 |
 | Universal Sentence Encoder + DNN | 1.388 | 1.705 | −2.034 |
-| **DistilBERT (fine-tuned)** | **0.671** | **0.881** | — |
+| **DistilBERT (fine-tuned)** | **0.671** | **0.881** | - |
 
 ![Model comparison](assets/model_comparison.png)
 
@@ -22,9 +22,9 @@ Trained on the [IMDB-Movie-Data](https://www.kaggle.com/datasets/PromptCloudHQ/i
 
 ## 💡 What the numbers actually say
 
-1. **The transformer wins — but only just.** DistilBERT (MAE 0.671) beats a plain TF-IDF + Ridge baseline (MAE 0.721) by **~0.05 of a rating point**. For the effort and compute a fine-tuned transformer costs, that's a humbling margin.
-2. **More complexity is not automatically better.** The mid-complexity USE + DNN was the **worst** model (negative R² — it did worse than predicting the mean). Dense nets on frozen sentence embeddings overfit this small dataset.
-3. **The task itself is hard.** Even the best model explains little variance. A plot summary carries only weak signal about a film's rating — cast, genre, budget and era matter more. The honest conclusion: **text alone is a weak predictor of rating**, and a simple baseline is a strong, cheap reference point.
+1. **The transformer wins - but only just.** DistilBERT (MAE 0.671) beats a plain TF-IDF + Ridge baseline (MAE 0.721) by **~0.05 of a rating point**. For the effort and compute a fine-tuned transformer costs, that's a humbling margin.
+2. **More complexity is not automatically better.** The mid-complexity USE + DNN was the **worst** model (negative R² - it did worse than predicting the mean). Dense nets on frozen sentence embeddings overfit this small dataset.
+3. **The task itself is hard.** Even the best model explains little variance. A plot summary carries only weak signal about a film's rating - cast, genre, budget and era matter more. The honest conclusion: **text alone is a weak predictor of rating**, and a simple baseline is a strong, cheap reference point.
 
 > Takeaway: always benchmark against a simple baseline before reaching for heavy models.
 
